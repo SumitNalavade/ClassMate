@@ -1,10 +1,10 @@
 import { create } from 'zustand'
 
-import { IUser } from '../utils/interfaces'
+import { User } from '@supabase/supabase-js'
 
 interface AppState {
-  currentUser?: IUser
-  setCurrentUser: (currentUser: IUser) => void
+  currentUser?: User
+  setCurrentUser: (currentUser: User) => void
 }
 
 const useAppState = create<AppState>()((set) => ({
