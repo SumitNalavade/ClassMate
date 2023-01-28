@@ -1,9 +1,15 @@
-import React from "react"
-import { NextPage } from "next"
+import React from "react";
+import { Session } from "@supabase/supabase-js";
 
-import Layout from "../components/layout"
+import supabase from "../config/supabase";
 
-const Profile: NextPage = () => {
+import Layout from "../components/layout";
+
+const Profile = ({ session }: { session: Session }) => {
+    async function signout() {
+        const { error } = await supabase.auth.signOut()
+    }
+
     return (
         <Layout>
                 <div className="h-1/2 bg-primary">
@@ -32,4 +38,4 @@ const Profile: NextPage = () => {
     )
 }
 
-export default Profile;
+export default Profile
