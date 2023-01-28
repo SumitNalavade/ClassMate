@@ -1,16 +1,19 @@
-import React, { use, useState } from "react";
+import React, { useState } from "react";
+import Router, { useRouter } from "next/router";
 import { NextPage } from "next";
 
+import useAppState from "../hooks/useAppStores";
+import supabase from "../config/supabase";
 import Layout from "../components/layout";
 
 interface AddCourseInput {
-    addCourse: (field: string, number: number, section: number) => void
+  addCourse: (field: string, number: number, section: number) => void;
 }
 
 const AddCourseInput: React.FC<AddCourseInput> = ({ addCourse }) => {
-    const [field, setField] = useState("")
-    const [course, setCourse] = useState<number>()
-    const [section, setSection] = useState<number>()
+  const [field, setField] = useState("");
+  const [course, setCourse] = useState<number>();
+  const [section, setSection] = useState<number>();
 
   return (
     <div className="flex justify-content-evenly py-4">
@@ -44,7 +47,10 @@ const AddCourseInput: React.FC<AddCourseInput> = ({ addCourse }) => {
         />
       </div>
 
-      <button className="btn btn-square btn-outline outline-green-800 mx-2" onClick={() => addCourse(field, course, section)}>
+      <button
+        className="btn btn-square btn-outline outline-green-800 mx-2"
+        onClick={() => addCourse(field, course!, section!)}
+      >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="16"
@@ -73,22 +79,28 @@ const AddCourseInput: React.FC<AddCourseInput> = ({ addCourse }) => {
   );
 };
 
-
-
 const Signup: NextPage = () => {
+    const router = useRouter()
+    const currentUser = useAppState((state) => state.currentUser);
   const [numClasses, setNumClasses] = useState(2);
-  const [courses, setCourses] = useState<any[]>([])
+  const [courses, setCourses] = useState<any[]>([]);
 
   const addCourse = (field: string, number: number, section: number) => {
-    const newCourse = { field, number, section }
+    const newCourse = { field, number, section };
 
-    setCourses([...courses, newCourse])
-  }
+    setCourses([...courses, newCourse]);
+  };
+
+  const createSchedule = async () => {
+    courses.forEach(async (course) => {
+        await supabase.from("courses").insert([{ field: course.field, level: course.level, section: course.section, user: currentUser?.id }])
+    })
+  };
 
   return (
     <Layout>
       <div className="h-1/2 flex flex-col justify-between items-center">
-        <h1 className="text-7xl font-bold py-6">Add Your Course Schedule</h1>
+        <h1 className="text-7xl font-bold py-2">Add Your Course Schedule</h1>
 
         <div>
           {Array.from(Array(numClasses)).map((index) => (
@@ -97,10 +109,20 @@ const Signup: NextPage = () => {
         </div>
 
         <button
-          className="btn btn-active btn-primary w-1/3"
+          className="btn btn-active btn-primary w-1/3 mb-6"
           onClick={() => setNumClasses(numClasses + 1)}
         >
           Add Another Course
+        </button>
+
+        <button
+          className="btn btn-active btn-primary w-1/3"
+          onClick={async () => {
+            await createSchedule()
+            router.push("/home")
+          }}
+        >
+          Continue
         </button>
       </div>
     </Layout>
