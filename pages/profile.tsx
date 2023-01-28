@@ -1,14 +1,21 @@
-import React from "react"
-import { NextPage } from "next"
+import React from "react";
+import { Session } from "@supabase/supabase-js";
 
-import Layout from "../components/layout"
+import supabase from "../config/supabase";
 
-const Profile: NextPage = () => {
+import Layout from "../components/layout";
+
+const Profile = ({ session }: { session: Session }) => {
+    async function signout() {
+        const { error } = await supabase.auth.signOut()
+    }
+
     return (
         <Layout>
-            <h1>Profile Page</h1>
+            <h1>{session.user.user_metadata["avatar_url"]}</h1>
+            <button onClick={signout}>Sign Out</button>
         </Layout>
     )
 }
 
-export default Profile;
+export default Profile
