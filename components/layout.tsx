@@ -9,7 +9,7 @@ interface Props {
 
 const Layout: React.FC<Props> = ({ children }) => {
     return (
-        <>
+        <div className="bg-primary bg-opacity-20">
             <Head>
                 <html data-theme="cupcake"></html>
             </Head>
@@ -19,7 +19,7 @@ const Layout: React.FC<Props> = ({ children }) => {
             <main className="h-screen container mx-auto">
                 { children }
             </main>
-        </>
+        </div>
     )
 }
 
