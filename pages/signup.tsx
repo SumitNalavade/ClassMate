@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import Router, { useRouter } from "next/router";
 import { NextPage } from "next";
+import { v4 as uuid } from 'uuid';
 
-import useAppState from "../hooks/useAppStores";
-import supabase from "../config/supabase";
+import { doc, setDoc } from "firebase/firestore"; 
+import { auth, db } from "../config/firebase";
 import Layout from "../components/layout";
 
 interface AddCourseInput {
@@ -81,23 +82,26 @@ const AddCourseInput: React.FC<AddCourseInput> = ({ addCourse }) => {
 
 const Signup: NextPage = () => {
   const router = useRouter();
-  const currentUser = useAppState((state) => state.currentUser);
+  const currentUser = auth.currentUser
   const [numClasses, setNumClasses] = useState(2);
   const [courses, setCourses] = useState<any[]>([]);
 
-  const addCourse = (field: string, number: number, section: number) => {
-    const newCourse = { field, number, section, user: currentUser?.id };
+  const addCourse = (field: string, level: number, section: number) => {
+    const newCourse = { field, level, section, user: auth.currentUser?.uid };
 
     setCourses([...courses, newCourse]);
   };
 
-  const createSchedule = async () => {
-    const { data, error } = await supabase
-      .from("courses")
-      .insert(courses);
-
-    console.log(error);
-  };
+  const createSchedule = async() => {
+    courses.forEach(async (course) => {
+      await setDoc(doc(db, "courses", uuid()), {
+        field: course.field,
+        level: course.level,
+        section: course.section,
+        user: currentUser?.uid
+      });
+    })
+  }
 
   return (
     <Layout>
@@ -108,7 +112,7 @@ const Signup: NextPage = () => {
 
         <div>
           {Array.from(Array(numClasses)).map((index) => (
-            <AddCourseInput addCourse={addCourse} key={index} />
+            <AddCourseInput addCourse={addCourse}  key={index} />
           ))}
         </div>
 

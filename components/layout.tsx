@@ -1,10 +1,9 @@
 import React, { useEffect } from "react";
 import Head from "next/head";
 
-import useAppState from "../hooks/useAppStores";
-
 import Navbar from "./navbar";
 import PostModal from "./postModal";
+import ProfileModal from "./postModal";
 
 interface Props {
     children: React.ReactNode
@@ -20,6 +19,8 @@ const Layout: React.FC<Props> = ({ children }) => {
             <Navbar />
 
             <PostModal />
+
+            <ProfileModal />
 
             <main className="h-screen">
                 { children }

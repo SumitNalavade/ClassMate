@@ -2,13 +2,13 @@ import React, { useState } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 
-import useAppState from "../../hooks/useAppStores";
-import { signInWithGoogle } from "../../utils/auth";
+import { auth } from "../../config/firebase";
+import { signIn } from "../../utils/auth";
 
 const Navbar: React.FC = () => {
   const router = useRouter();
 
-  const currentUser = useAppState((state) => state.currentUser);
+  const currentUser = auth.currentUser
 
   return (
     <div className="navbar bg-base-100">
@@ -19,6 +19,7 @@ const Navbar: React.FC = () => {
         </Link>
       </div>
       <div className="flex-none">
+
         { currentUser ? (<div>
           <label
             tabIndex={0}
@@ -42,23 +43,14 @@ const Navbar: React.FC = () => {
             </div>
           </label>
         </div>) : "" }
+
         <div>
           <div>
             <label
               tabIndex={0}
               className="btn btn-ghost btn-circle avatar"
-              onClick={() => {
-                currentUser ? router.push("/profile") : signInWithGoogle()
-              }}
             >
               <div className="w-10 rounded-full">
-                <img
-                  src={
-                    currentUser
-                      ? currentUser.user_metadata["avatar_url"]
-                      : "https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png"
-                  }
-                />
               </div>
             </label>
           </div>

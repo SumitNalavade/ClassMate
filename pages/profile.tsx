@@ -2,26 +2,25 @@ import React, { useEffect } from "react";
 import { useRouter } from "next/router";
 import { NextPage } from "next";
 
-import useAppState from "../hooks/useAppStores";
+import { auth } from "../config/firebase";
 
 import Layout from "../components/layout";
 import { signOut } from "../utils/auth";
 
 const Profile: NextPage = () => {
-    const router = useRouter()
-    const currentUser = useAppState((state) => state.currentUser)
+    const currentUser = auth.currentUser
 
     return (
         <Layout>
             <div className="h-1/2 bg-primary w-screen">
-                <div className="text-base-100 text-5xl pl-8 pt-28 font-semibold flex">{currentUser?.user_metadata["full_name"]}</div>
-                <div className="text-base-100 pl-8 pt-2 text-lg font-semibold flex">{currentUser?.email}</div>
+                <div className="text-base-100 text-5xl pl-8 pt-28 font-semibold flex">{ currentUser?.displayName }</div>
+                <div className="text-base-100 pl-8 pt-2 text-lg font-semibold flex">{ currentUser?.email }</div>
                 <div className="underline underline-offset-1 pl-8 pt-10 text-md text-base-100 font-semibold flex">
                     <button>Edit Profile Details</button>
                 </div>
-                <div className="translate-x-3/4 scale-150">
-                    <img className="rounded-full" src={currentUser?.user_metadata["avatar_url"]} alt="profile pic" />
-                </div>
+                {/* <div className="w-sm">
+                    <img className="rounded-full" src={"https://media.licdn.com/dms/image/D4E03AQGJ66ZMFbrBUQ/profile-displayphoto-shrink_800_800/0/1640471534135?e=2147483647&v=beta&t=xNRKGBbedok-Weng6hzBWgonm9szwVtbJHCFIyNQeBc"} alt="profile pic" />
+                </div> */}
             </div>
             <div className="h-1/2 bg-gradient-to-br from-base-100 via-purple-300 to-primary">
                 <div className="text-primary font-semibold">
@@ -37,7 +36,7 @@ const Profile: NextPage = () => {
                     </button> 
                 </div>
                 <div className="pl-12 pt-10">
-                    <button onClick={signOut} className="rounded-lg bg-accent text-base-100 px-5 py-1 opacity-90">Sign Out</button>
+                    <button className="rounded-lg bg-accent text-base-100 px-5 py-1 opacity-90" onClick={signOut}>Sign Out</button>
                 </div>
             </div>
         </Layout>

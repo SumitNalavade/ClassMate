@@ -1,24 +1,33 @@
 import React, { useState } from "react";
+import { v4 as uuid } from "uuid"
+import { setDoc, doc } from "firebase/firestore";
+import { db, auth } from "../../config/firebase";
 
-import supabase from "../../config/supabase";
-import useAppState from "../../hooks/useAppStores";
+import useAppStore from "../../hooks/useAppStore";
 
-const PostModal: React.FC = () => {
-    const currentUser = useAppState((state) => state.currentUser)
+interface Props {
+  course: any
+}
+
+const PostModal: React.FC<Props> = ({ course }) => {
+  const currentUser = auth.currentUser
+  const userCourses = useAppStore((state) => state.userCourses)
 
   const [field, setField] = useState("");
   const [level, setLevel] = useState<number>();
   const [section, setSection] = useState<number>();
   const [postSuccessful, setPostSuccessful] = useState(false);
 
-  const createPost = async () => {
-    const { data: post, error } = await supabase
-      .from("post")
-      .insert([{ field, level, section, user: currentUser?.id }])
+  const createPost = async() => {
+    await setDoc(doc(db, "posts", uuid()), {
+      field,
+      level,
+      section,
+      user: currentUser?.uid
+    });
 
-    if(!error) setPostSuccessful(true) 
-
-  };
+    setPostSuccessful(true)
+  }
 
   return (
     <>
@@ -33,6 +42,11 @@ const PostModal: React.FC = () => {
                     <h3 className="text-xl font-bold text-neutral mb-4">
             What Course Are You Looking For?
           </h3>
+            
+            { userCourses?.forEach(course => (
+              <button className="btn btn-success">{course.field} {course.level} {course.section}</button>
+            )) }
+
           <div className="grid grid-cols-3">
             <div className="p-2">
               <input
@@ -66,7 +80,7 @@ const PostModal: React.FC = () => {
               />
             </div>
           </div>
-          <button className="btn btn-active btn-primary w-full my-4 bg-opacity-20" onClick={createPost}>
+          <button className="btn btn-active btn-primary w-full my-4 bg-opacity-20" onClick={createPost} >
             Post
           </button>
                 </>

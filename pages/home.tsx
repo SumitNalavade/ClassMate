@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { NextPage, GetServerSideProps } from "next";
+import { collection, query, where, getDocs } from "firebase/firestore";
 
-import supabase from "../config/supabase";
+import { db } from "../config/firebase";
 
 import Layout from "../components/layout";
 import PostCard from "../components/postCard";
@@ -25,11 +26,10 @@ const Home: NextPage<Props> = ({ posts }) => {
 }
 
 export const getServerSideProps: GetServerSideProps = async ({  }) => {
-  let { data: posts, error } = await supabase
-  .from('post')
-  .select('*')
+    const q = query(collection(db, "posts"));
+    const querySnapshot = await getDocs(q).then((res) => res.docs.map((doc) => doc.data()))
 
-  return { props: { posts } }
+    return { props: { posts : querySnapshot } }
   
 }
 
