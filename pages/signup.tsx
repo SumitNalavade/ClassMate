@@ -80,8 +80,8 @@ const AddCourseInput: React.FC<AddCourseInput> = ({ addCourse }) => {
 };
 
 const Signup: NextPage = () => {
-    const router = useRouter()
-    const currentUser = useAppState((state) => state.currentUser);
+  const router = useRouter()
+  const currentUser = useAppState((state) => state.currentUser);
   const [numClasses, setNumClasses] = useState(2);
   const [courses, setCourses] = useState<any[]>([]);
 
@@ -93,14 +93,14 @@ const Signup: NextPage = () => {
 
   const createSchedule = async () => {
     courses.forEach(async (course) => {
-        await supabase.from("courses").insert([{ field: course.field, level: course.level, section: course.section, user: currentUser?.id }])
+      await supabase.from("courses").insert([{ field: course.field, level: course.level, section: course.section, user: currentUser?.id }])
     })
   };
 
   return (
     <Layout>
       <div className="h-1/2 flex flex-col justify-between items-center">
-        <h1 className="text-7xl font-bold py-2">Add Your Course Schedule</h1>
+        <h1 className="font-extrabold pt-12 text-transparent text-7xl bg-clip-text bg-gradient-to-r from-purple-400 via-indigo-500 to-secondary">Add Your Course Schedule</h1>
 
         <div>
           {Array.from(Array(numClasses)).map((index) => (
@@ -109,14 +109,14 @@ const Signup: NextPage = () => {
         </div>
 
         <button
-          className="btn btn-active btn-primary w-1/3 mb-6"
+          className="bg-indigo-550 opacity-75 btn btn-active btn-primary w-1/3 mb-6 hover:bg-base-100 hover:text-indigo-500"
           onClick={() => setNumClasses(numClasses + 1)}
         >
           Add Another Course
         </button>
 
         <button
-          className="btn btn-active btn-primary w-1/3"
+          className="bg-indigo-500 opacity-75 btn btn-active btn-primary w-1/3 hover:bg-base-100 hover:text-indigo-500"
           onClick={async () => {
             await createSchedule()
             router.push("/home")
