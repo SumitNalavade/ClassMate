@@ -5,11 +5,7 @@ import { db, auth } from "../../config/firebase";
 
 import useAppStore from "../../hooks/useAppStore";
 
-interface Props {
-  course: any
-}
-
-const PostModal: React.FC<Props> = ({ course }) => {
+const PostModal: React.FC = () => {
   const currentUser = auth.currentUser
   const userCourses = useAppStore((state) => state.userCourses)
 
