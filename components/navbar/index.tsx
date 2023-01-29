@@ -28,7 +28,7 @@ const Navbar: React.FC = () => {
       </div>
       <div className="flex-none">
         <div>
-          <label tabIndex={0} className="btn btn-ghost btn-circle">
+          <label tabIndex={0} className="btn btn-ghost btn-circle" htmlFor="postModal">
             <div className="indicator">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
