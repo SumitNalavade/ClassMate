@@ -21,7 +21,7 @@ const Layout: React.FC<Props> = ({ children }) => {
 
             <PostModal />
 
-            <main className="h-screen container mx-auto">
+            <main className="h-screen">
                 { children }
             </main>
         </div>

@@ -1,15 +1,9 @@
 import React from "react";
 import { NextPage } from "next";
 
-import supabase from "../config/supabase";
+import { signInWithGoogle } from "../utils/auth";
 
 const Landing: NextPage = () => {
-  async function signInWithGoogle() {
-    const { data } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-    });
-  }
-
   return (
     <>
       <div className="h-screen bg-gradient-to-br from-base-100 via-purple-300 to-primary">

@@ -1,26 +1,37 @@
 import React from "react";
-import { NextPage } from "next";
+import { NextPage, GetServerSideProps } from "next";
+
+import supabase from "../config/supabase";
 
 import Layout from "../components/layout";
+import PostCard from "../components/postCard";
 
-const Home: NextPage = () => {
+interface Props {
+  posts: any[]
+}
+
+const Home: NextPage<Props> = ({ posts }) => {
     return (
         <Layout>
-            <div className="h-screen">
-                <button>
-                    <div className="flex-wrap">
-                        <div className="font-bold text-5xl text-secondary">Recent</div>
-                        <div className="card w-72 bg-base-100 shadow-xl">
-                            <div className="card-body items-center">
-                                <h2 className="card-title items-center">CSCE-181-700</h2>
-                                <p className="text-center">Tyagi, Aakash</p>
-                            </div>
-                        </div>
-                    </div>
-                </button>
+            <div className="h-screen p-12 container">
+              <div className="flex flex-wrap items-center">
+                {posts.map((post) => (
+                  <PostCard course={post} />
+                ))}
+              </div>
             </div>
         </Layout>
     )
 }
+
+export const getServerSideProps: GetServerSideProps = async ({  }) => {
+  let { data: posts, error } = await supabase
+  .from('post')
+  .select('*')
+
+  return { props: { posts } }
+  
+}
+
 
 export default Home;
