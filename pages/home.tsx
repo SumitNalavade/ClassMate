@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import Link from "next/link";
 import { NextPage, GetServerSideProps } from "next";
 import { collection, query, where, getDocs } from "firebase/firestore";
 
@@ -17,7 +18,9 @@ const Home: NextPage<Props> = ({ posts }) => {
             <div className="h-screen p-12 container">
               <div className="flex flex-wrap items-center">
                 {posts.map((post) => (
-                  <PostCard course={post} />
+                  <Link href="/details">
+                    <PostCard course={post} />
+                  </Link>
                 ))}
               </div>
             </div>
