@@ -80,27 +80,31 @@ const AddCourseInput: React.FC<AddCourseInput> = ({ addCourse }) => {
 };
 
 const Signup: NextPage = () => {
-  const router = useRouter()
+  const router = useRouter();
   const currentUser = useAppState((state) => state.currentUser);
   const [numClasses, setNumClasses] = useState(2);
   const [courses, setCourses] = useState<any[]>([]);
 
   const addCourse = (field: string, number: number, section: number) => {
-    const newCourse = { field, number, section };
+    const newCourse = { field, number, section, user: currentUser?.id };
 
     setCourses([...courses, newCourse]);
   };
 
   const createSchedule = async () => {
-    courses.forEach(async (course) => {
-      await supabase.from("courses").insert([{ field: course.field, level: course.level, section: course.section, user: currentUser?.id }])
-    })
+    const { data, error } = await supabase
+      .from("courses")
+      .insert(courses);
+
+    console.log(error);
   };
 
   return (
     <Layout>
       <div className="h-1/2 flex flex-col justify-between items-center">
-        <h1 className="font-extrabold pt-12 text-transparent text-7xl bg-clip-text bg-gradient-to-r from-purple-400 via-indigo-500 to-secondary">Add Your Course Schedule</h1>
+        <h1 className="font-extrabold pt-12 text-transparent text-7xl bg-clip-text bg-gradient-to-r from-purple-400 via-indigo-500 to-secondary">
+          Add Your Course Schedule
+        </h1>
 
         <div>
           {Array.from(Array(numClasses)).map((index) => (
@@ -117,10 +121,7 @@ const Signup: NextPage = () => {
 
         <button
           className="bg-indigo-500 opacity-75 btn btn-active btn-primary w-1/3 hover:bg-base-100 hover:text-indigo-500"
-          onClick={async () => {
-            await createSchedule()
-            router.push("/home")
-          }}
+          onClick={createSchedule}
         >
           Continue
         </button>

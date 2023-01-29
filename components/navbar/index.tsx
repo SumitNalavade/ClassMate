@@ -1,22 +1,14 @@
 import React, { useState } from "react";
+import { useRouter } from "next/router";
 import Link from "next/link";
-import { User } from "@supabase/supabase-js";
 
-import supabase from "../../config/supabase";
-
+import useAppState from "../../hooks/useAppStores";
+import { signInWithGoogle } from "../../utils/auth";
 
 const Navbar: React.FC = () => {
-  const [currentUser, setCurrentUser] = useState<User>()
+  const router = useRouter();
 
-  useState(async() => {
-    const getCurrentUser = async() => {
-      const currentUser = (await supabase.auth.getUser()).data.user!
-
-      setCurrentUser(currentUser);
-    }
-
-    getCurrentUser();
-  })
+  const currentUser = useAppState((state) => state.currentUser);
 
   return (
     <div className="navbar bg-base-100">
@@ -27,8 +19,12 @@ const Navbar: React.FC = () => {
         </Link>
       </div>
       <div className="flex-none">
-        <div>
-          <label tabIndex={0} className="btn btn-ghost btn-circle">
+        { currentUser ? (<div>
+          <label
+            tabIndex={0}
+            className="btn btn-ghost btn-circle"
+            htmlFor="postModal"
+          >
             <div className="indicator">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -45,15 +41,27 @@ const Navbar: React.FC = () => {
               </svg>
             </div>
           </label>
-        </div>
+        </div>) : "" }
         <div>
-          <Link href={"/profile"}>
-            <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
+          <div>
+            <label
+              tabIndex={0}
+              className="btn btn-ghost btn-circle avatar"
+              onClick={() => {
+                currentUser ? router.push("/profile") : signInWithGoogle()
+              }}
+            >
               <div className="w-10 rounded-full">
-                <img src={currentUser ? currentUser.user_metadata["avatar_url"] : "https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png"} />
+                <img
+                  src={
+                    currentUser
+                      ? currentUser.user_metadata["avatar_url"]
+                      : "https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png"
+                  }
+                />
               </div>
             </label>
-          </Link>
+          </div>
         </div>
       </div>
     </div>
