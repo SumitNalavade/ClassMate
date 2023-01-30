@@ -23,7 +23,7 @@ const Layout: React.FC<Props> = ({ children }) => {
             <ProfileModal />
 
             <main className="h-screen">
-                { children }
+                {children}
             </main>
         </div>
     )
